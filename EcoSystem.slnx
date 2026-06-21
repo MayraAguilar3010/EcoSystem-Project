@@ -1,2 +1,4 @@
 <Solution>
+  <Project Path="EcoSystem.API/EcoSystem.API.csproj" />
+  <Project Path="EcoSystem.Data/EcoSystem.Data.csproj" />
 </Solution>
