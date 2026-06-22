@@ -1,6 +1,6 @@
 namespace EcoSystem.Data.Models
 {
-    public class Productos
+    public class Producto
     {
         public int Id { get; set; }
 
