@@ -1,6 +1,6 @@
 namespace EcoSystem.Data.Models
 {
-    public class Productosgit add 
+    public class Productos
     {
         public int Id { get; set; }
 
