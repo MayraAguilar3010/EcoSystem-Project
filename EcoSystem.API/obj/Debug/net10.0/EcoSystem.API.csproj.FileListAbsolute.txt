@@ -159,3 +159,6 @@ C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\obj\Debug\net10.0\refint\EcoSyste
 C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\obj\Debug\net10.0\EcoSystem.API.pdb
 C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\obj\Debug\net10.0\EcoSystem.API.genruntimeconfig.cache
 C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\obj\Debug\net10.0\ref\EcoSystem.API.dll
+C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\mayra\Desktop\EcoSystem\EcoSystem.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
