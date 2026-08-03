@@ -67,3 +67,76 @@ GET /health
 6. Desplegar y revisar logs hasta que el servicio aparezca como Live.
 7. Abrir `/swagger` en la URL publica del servicio.
 8. Probar al menos tres endpoints desde Swagger y documentar metodo, ruta, codigo HTTP y observaciones.
+
+## Autenticacion JWT
+
+La API usa JWT Bearer para proteger endpoints.
+
+### Variables necesarias
+
+No guardes claves reales en `appsettings.json`. Configura estos valores como variables de entorno o User Secrets:
+
+```text
+JwtSettings__SecretKey=<clave-real-minimo-32-caracteres>
+JwtSettings__Issuer=EcoSystem.API
+JwtSettings__Audience=EcoSystem.Client
+JwtSettings__ExpirationMinutes=60
+SeedUsers__AdminPassword=<password-admin-seguro>
+SeedUsers__UserPassword=<password-user-seguro>
+```
+
+`SeedUsers__AdminPassword` y `SeedUsers__UserPassword` solo se usan para crear usuarios de prueba si no existen. Las contrasenas se almacenan como hash usando `PasswordHasher<User>`.
+
+### Endpoints de autenticacion
+
+```text
+POST /api/Auth/login
+```
+
+Cuerpo de ejemplo:
+
+```json
+{
+  "username": "admin",
+  "password": "tu-password-configurado-en-variable"
+}
+```
+
+Respuestas esperadas:
+
+- `400` si faltan datos.
+- `401` si las credenciales son incorrectas.
+- `200` si las credenciales son correctas. La respuesta incluye `token`, `expiresAt`, `username` y `role`.
+
+### Uso del token en Swagger
+
+1. Abre `/swagger`.
+2. Ejecuta `POST /api/Auth/login` con el usuario de prueba.
+3. Copia el valor de `token`.
+4. Haz clic en **Authorize**.
+5. Escribe:
+
+```text
+Bearer TU_TOKEN
+```
+
+6. Ejecuta endpoints protegidos.
+
+### Endpoints protegidos
+
+- `GET /api/Productos`: requiere cualquier usuario autenticado.
+- `POST /api/Productos`: requiere rol `Admin`.
+- `PUT /api/Productos/{id}`: requiere rol `Admin`.
+- `DELETE /api/Productos/{id}`: requiere rol `Admin`.
+
+### Migracion local
+
+Se agrego la migracion `AddUsers` para crear la tabla `Users` en SQL Server local.
+
+Comando:
+
+```bash
+dotnet ef database update --project EcoSystem.API/EcoSystem.API.csproj --startup-project EcoSystem.API/EcoSystem.API.csproj --context ApplicationDbContext
+```
+
+En Render no se aplican migraciones porque el despliegue de practica usa Entity Framework InMemory.
