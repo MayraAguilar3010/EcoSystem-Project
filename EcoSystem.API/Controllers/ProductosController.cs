@@ -1,11 +1,13 @@
-using EcoSystem.Data;
+﻿using EcoSystem.Data;
 using EcoSystem.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcoSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +24,7 @@ namespace EcoSystem.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post(Producto producto)
         {
             _context.Productos.Add(producto);
@@ -31,6 +34,7 @@ namespace EcoSystem.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, Producto productoActualizado)
         {
             var producto = _context.Productos.Find(id);
@@ -48,6 +52,7 @@ namespace EcoSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             var producto = _context.Productos.Find(id);

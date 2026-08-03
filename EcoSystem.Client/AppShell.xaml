@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="EcoSystem.Client.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:EcoSystem.Client.Views"
+    Title="EcoSystem Connect"
+    Shell.FlyoutBehavior="Disabled">
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="LoginPage" />
+
+    <ShellContent
+        Title="Productos"
+        ContentTemplate="{DataTemplate views:ProductosPage}"
+        Route="ProductosPage" />
+</Shell>

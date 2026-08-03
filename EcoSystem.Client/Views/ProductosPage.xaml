@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EcoSystem.Client.Views.ProductosPage"
+             Title="Productos">
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+            <VerticalStackLayout>
+                <Label Text="Productos" FontSize="28" FontAttributes="Bold" />
+                <Label Text="{Binding CurrentUser, StringFormat='Usuario: {0}'}" />
+                <Label Text="{Binding CurrentRole, StringFormat='Rol: {0}'}" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1" Text="Recargar" Command="{Binding LoadProductosCommand}" />
+            <Button Grid.Column="2" Text="Salir" Command="{Binding LogoutCommand}" />
+        </Grid>
+
+        <Button Grid.Row="1" Text="Agregar producto" Command="{Binding AddProductoCommand}" />
+
+        <RefreshView Grid.Row="2" Command="{Binding LoadProductosCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Productos}" EmptyView="No hay productos para mostrar.">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="#D0D7DE" Padding="12" Margin="0,6" StrokeShape="RoundRectangle 8">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                <Label Text="{Binding Nombre}" FontSize="18" FontAttributes="Bold" />
+                                <Label Grid.Row="1" Text="{Binding Precio, StringFormat='Precio: {0:C}'}" />
+                                <Label Grid.Row="2" Text="{Binding Stock, StringFormat='Existencias: {0}'}" />
+                                <HorizontalStackLayout Grid.Column="1" Grid.RowSpan="3" Spacing="8" VerticalOptions="Center">
+                                    <Button Text="Editar" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditProductoCommand}" CommandParameter="{Binding .}" />
+                                    <Button Text="Eliminar" BackgroundColor="#B3261E" TextColor="White" Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteProductoCommand}" CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <VerticalStackLayout Grid.Row="3" Spacing="4">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+            <Label Text="{Binding SuccessMessage}" TextColor="Green" IsVisible="{Binding SuccessMessage, Converter={StaticResource StringNotEmptyConverter}}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
