@@ -18,5 +18,3 @@ ENV DOTNET_hostBuilder__reloadConfigOnChange=false
 EXPOSE 10000
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "EcoSystem.API.dll"]
-
-
