@@ -1,6 +1,8 @@
 ﻿using EcoSystem.API.Settings;
 using EcoSystem.Data;
+using EcoSystem.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -26,7 +28,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
     else
     {
-        options.UseSqlServer(connectionString);
+        options.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly("EcoSystem.API"));
     }
 });
 
@@ -88,6 +90,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+await SeedUsersAsync(app);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -96,6 +100,58 @@ app.MapControllers();
 
 app.Run();
 
+static async Task SeedUsersAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var passwordHasher = new PasswordHasher<User>();
 
+    await AddUserIfConfiguredAsync(
+        context,
+        passwordHasher,
+        username: "admin",
+        email: "admin@ecosystem.local",
+        role: "Admin",
+        password: app.Configuration["SeedUsers:AdminPassword"]);
 
+    await AddUserIfConfiguredAsync(
+        context,
+        passwordHasher,
+        username: "user",
+        email: "user@ecosystem.local",
+        role: "User",
+        password: app.Configuration["SeedUsers:UserPassword"]);
+}
+
+static async Task AddUserIfConfiguredAsync(
+    ApplicationDbContext context,
+    PasswordHasher<User> passwordHasher,
+    string username,
+    string email,
+    string role,
+    string? password)
+{
+    if (string.IsNullOrWhiteSpace(password))
+    {
+        return;
+    }
+
+    var existingUser = await context.Users.FirstOrDefaultAsync(user => user.Username == username);
+    if (existingUser != null)
+    {
+        return;
+    }
+
+    var user = new User
+    {
+        Username = username,
+        Email = email,
+        Role = role,
+        CreatedAt = DateTime.UtcNow
+    };
+
+    user.PasswordHash = passwordHasher.HashPassword(user, password);
+    context.Users.Add(user);
+    await context.SaveChangesAsync();
+}
 
