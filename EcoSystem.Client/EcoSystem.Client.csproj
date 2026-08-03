@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>EcoSystem.Client</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Views\*.xaml" />
+    <None Include="App.xaml" />
+    <None Include="AppShell.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Platforms\**\*.cs" />
+    <Compile Remove="Resources\**\*.cs" />
+    <Compile Remove="MainPage.xaml.cs" />
+    <Compile Remove="GlobalXmlns.cs" />
+    <None Include="Platforms\**\*" />
+    <None Include="Resources\**\*" />
+    <None Include="MainPage.xaml" />
+  </ItemGroup>
+</Project>
+
+
