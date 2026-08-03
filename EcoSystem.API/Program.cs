@@ -1,4 +1,5 @@
-using EcoSystem.API.Settings;
+﻿using EcoSystem.API.Settings;
+using EcoSystem.API.Swagger;
 using EcoSystem.Data;
 using EcoSystem.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -72,20 +73,14 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Ingresa el token JWT usando el formato: Bearer {token}"
+        Description = "Ingresa el encabezado completo: Bearer {token}"
     });
 
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecuritySchemeReference("Bearer", document, null),
-            new List<string>()
-        }
-    });
+    options.OperationFilter<AuthorizeOperationFilter>();
 });
 
 var app = builder.Build();
@@ -157,3 +152,4 @@ static async Task AddUserIfConfiguredAsync(
     context.Users.Add(user);
     await context.SaveChangesAsync();
 }
+
