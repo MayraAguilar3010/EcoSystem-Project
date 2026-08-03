@@ -1,6 +1,7 @@
 ﻿using EcoSystem.Data;
 using Microsoft.EntityFrameworkCore;
 
+Environment.SetEnvironmentVariable("DOTNET_hostBuilder__reloadConfigOnChange", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
@@ -38,3 +39,4 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapControllers();
 
 app.Run();
+
