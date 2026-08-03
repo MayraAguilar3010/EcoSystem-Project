@@ -20,6 +20,19 @@ builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 builder.Services.AddControllers();
 
+const string ClientCorsPolicy = "EcoSystemClient";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(ClientCorsPolicy, policy =>
+    {
+        policy.WithOrigins(
+                "http://127.0.0.1:5178",
+                "http://localhost:5178")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var isRender = string.Equals(Environment.GetEnvironmentVariable("RENDER"), "true", StringComparison.OrdinalIgnoreCase);
 var useInMemoryDatabase = isRender || string.IsNullOrWhiteSpace(connectionString);
@@ -88,6 +101,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors(ClientCorsPolicy);
+
 await SeedUsersAsync(app);
 
 app.UseAuthentication();
@@ -152,4 +167,5 @@ static async Task AddUserIfConfiguredAsync(
     context.Users.Add(user);
     await context.SaveChangesAsync();
 }
+
 
