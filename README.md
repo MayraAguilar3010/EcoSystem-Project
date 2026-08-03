@@ -140,3 +140,61 @@ dotnet ef database update --project EcoSystem.API/EcoSystem.API.csproj --startup
 ```
 
 En Render no se aplican migraciones porque el despliegue de practica usa Entity Framework InMemory.
+
+## Fase 2 - Cliente EcoSystem Connect
+
+Se agrego el proyecto `EcoSystem.Client` con estructura MVVM solicitada para las firmas 1 a 6:
+
+- `Models`: `Producto`, `LoginRequest`, `LoginResponse`.
+- `Views`: `LoginPage`, `ProductosPage`, `ProductoFormPage`.
+- `ViewModels`: login, listado y formulario de productos.
+- `Services`: `ApiService`, `AuthService`, `AuthHeaderHandler`, `TokenService`.
+
+El cliente consume la API publicada en Render:
+
+```text
+https://ecosystem-connect-api.onrender.com/
+```
+
+Operaciones implementadas desde el cliente:
+
+- `POST /api/Auth/login`
+- `GET /api/Productos`
+- `POST /api/Productos`
+- `PUT /api/Productos/{id}`
+- `DELETE /api/Productos/{id}`
+
+El token JWT se guarda mediante `TokenService`, no se guarda la contrasena, y `AuthHeaderHandler` agrega automaticamente:
+
+```text
+Authorization: Bearer TOKEN
+```
+
+### Ejecutar o compilar el cliente
+
+En este entorno, el cliente se dejo como proyecto .NET 10 compilable y con archivos XAML incluidos como vistas de la practica. Para validar compilacion:
+
+```bash
+dotnet restore EcoSystem.Client/EcoSystem.Client.csproj
+dotnet build EcoSystem.Client/EcoSystem.Client.csproj --no-restore
+```
+
+Si se abre en Visual Studio con workloads completos de .NET MAUI, se puede migrar el `.csproj` a `UseMaui=true` y targets MAUI del equipo. En esta sesion NuGet externo estaba bloqueado por el proxy local `127.0.0.1:9`, por lo que se evito depender de paquetes descargables.
+
+### Evidencia sugerida para las firmas
+
+1. Estructura del proyecto `EcoSystem.Client` con carpetas `Models`, `Views`, `ViewModels`, `Services`.
+2. Compilacion del cliente con `0 Errores`.
+3. Swagger de Render abierto.
+4. Login exitoso en `POST /api/Auth/login`.
+5. Token guardado/usado por el cliente o evidencia del header `Authorization`.
+6. Lista de productos cargada desde `GET /api/Productos`.
+7. Producto creado desde usuario Admin.
+8. Producto editado desde usuario Admin.
+9. Confirmacion y eliminacion de producto desde usuario Admin.
+10. Intento con usuario normal recibiendo `403` en operacion restringida.
+11. Cierre de sesion y regreso a login.
+
+### Persistencia remota
+
+La API sigue preparada para usar `ConnectionStrings__DefaultConnection` cuando exista una base SQL Server remota. Actualmente Render conserva la base en memoria para demostracion inmediata. Para persistencia real, configura una base SQL Server compatible, agrega la variable `ConnectionStrings__DefaultConnection` en Render y quita `RENDER=true` o ajusta la condicion para usar SQL remoto.
